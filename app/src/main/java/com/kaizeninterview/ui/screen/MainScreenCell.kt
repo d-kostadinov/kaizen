@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,13 +49,13 @@ fun MainScreenCell(cellData: Cell) {
                 tint = Color.White
             )
         }
-        Text(text = cellData.competitor1, fontSize = 14.sp, color = Color.White)
+        Text(text = cellData.competitor1, fontSize = 14.sp, color = Color.White, textAlign = TextAlign.Center)
         Text(
             text = stringResource(R.string.vs).uppercase(Locale.ROOT),
             color = KaizenRed,
             fontSize = 9.sp
         )
-        Text(text = cellData.competitor2, fontSize = 14.sp, color = Color.White)
+        Text(text = cellData.competitor2, fontSize = 14.sp, color = Color.White, textAlign = TextAlign.Center)
     }
 
 }

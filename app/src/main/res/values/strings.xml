@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">KaizenInterview</string>
     <string name="vs">vs</string>
+    <string name="general_error">Something goes wrong</string>
+    <string name="please_wait">Please wait…</string>
+    <string name="close">Close</string>
+
 </resources>

@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.hiltAndroid)
+    alias(libs.plugins.kotlinKapt)
+
 }
 
 android {
@@ -44,8 +47,13 @@ android {
     }
     packaging {
         resources {
+            excludes += "/META-INF/gradle/incremental.annotation.processors"
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+    }
+
+    hilt {
+        enableAggregatingTask = false
     }
 }
 
@@ -60,6 +68,19 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
+
+    implementation(libs.bundles.network)
+    implementation(libs.bundles.lifecycleAndCoroutines)
+    implementation(libs.gson)
+    implementation(libs.hilt.android)
+    implementation(libs.hiltNavigationCompose)
+    implementation(libs.retrofit2)
+    implementation(libs.retrofit2.gson)
+    implementation(libs.okhttp3)
+    implementation(libs.okhttp3.logging)
+
+    kapt(libs.hilt.compiler)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

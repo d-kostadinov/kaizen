@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -24,14 +25,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.kaizeninterview.ui.screen.data.Cell
 import com.kaizeninterview.ui.screen.data.Section
+import com.kaizeninterview.ui.screen.util.LoadingDialog
+import com.kaizeninterview.ui.screen.util.showErrorDialog
 import com.kaizeninterview.ui.theme.KaizenBlue
 import com.kaizeninterview.ui.theme.KaizenPrimaryColor
+import com.kaizeninterview.util.mapSportListToSectionList
+import com.kaizeninterview.util.mapSportToSection
+import com.kaizeninterview.viewmodel.KaizenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(titleName: String, modifier: Modifier = Modifier) {
+fun MainScreen(
+    titleName: String,
+    modifier: Modifier = Modifier,
+    viewModel: KaizenViewModel = hiltViewModel()
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -45,43 +56,63 @@ fun MainScreen(titleName: String, modifier: Modifier = Modifier) {
         }
     ) { innerPadding ->
 
-        MainScreenContent(innerPadding)
+        MainScreenContent(innerPadding, viewModel = viewModel)
 
     }
 }
 
 @Composable
-fun MainScreenContent(innerPadding: PaddingValues) {
+fun MainScreenContent(innerPadding: PaddingValues, viewModel: KaizenViewModel) {
 
-    var cell = Cell(10, false, "asd", "asd")
-    var cellFav = Cell(10, true, "asd", "asd")
+    val salesOrderLinesState by viewModel.sportsData.collectAsState()
 
-    val sections = listOf(
-        Section(
-            "Section 1",
-            listOf(
-                cell,
-                cell,
-                cell,
-                cell,
-                cell,
-                cellFav,
-                cell,
-                cell,
-                cellFav,
-                cell,
-                cell,
-                cell,
-                cell
-            ),
-            true,
-            true
-        ),
-        Section("Section 2", listOf(cell, cell, cell, cell), false, true),
-        Section("Section 3", listOf(cell, cell, cell, cell), true, true),
-    )
+    when {
+        salesOrderLinesState.isLoading -> {
+            LoadingDialog()
+        }
 
-    SectionedGrid(Modifier.padding(innerPadding), sections = sections)
+        salesOrderLinesState.error != null -> {
+            showErrorDialog(
+                error = salesOrderLinesState.error!!
+            )
+        }
+
+        salesOrderLinesState.data != null -> {
+            SectionedGrid(
+                Modifier.padding(innerPadding),
+                sections = mapSportListToSectionList(salesOrderLinesState.data!!)
+            )
+        }
+    }
+
+//    var cell = Cell(10, false, "asd", "asd")
+//    var cellFav = Cell(10, true, "asd", "asd")
+//
+//    val sections = listOf(
+//        Section(
+//            "Section 1",
+//            listOf(
+//                cell,
+//                cell,
+//                cell,
+//                cell,
+//                cell,
+//                cellFav,
+//                cell,
+//                cell,
+//                cellFav,
+//                cell,
+//                cell,
+//                cell,
+//                cell
+//            ),
+//            true,
+//            true
+//        ),
+//        Section("Section 2", listOf(cell, cell, cell, cell), false, true),
+//        Section("Section 3", listOf(cell, cell, cell, cell), true, true),
+//    )
+
 
 //    val numbers = (1..10).toList()
 //    LazyColumn(contentPadding = innerPadding) {

@@ -7,7 +7,7 @@ data class Section(
     val title: String,
     val items: List<Cell>,
     var isFav: Boolean = false,
-    var isExpanded: Boolean = false
+    var isExpanded: Boolean = true
 ) {
     fun calculateSectionHeight(): Dp {
         var rows = items.size / 4
