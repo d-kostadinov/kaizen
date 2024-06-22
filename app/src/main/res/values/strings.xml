@@ -4,5 +4,6 @@
     <string name="general_error">Something goes wrong</string>
     <string name="please_wait">Please wait…</string>
     <string name="close">Close</string>
+    <string name="no_fav_games">No fav games</string>
 
 </resources>

@@ -79,8 +79,11 @@ dependencies {
     implementation(libs.retrofit2.gson)
     implementation(libs.okhttp3)
     implementation(libs.okhttp3.logging)
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
 
     kapt(libs.hilt.compiler)
+    kapt(libs.room.compiler)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

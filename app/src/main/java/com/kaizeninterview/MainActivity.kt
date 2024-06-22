@@ -39,7 +39,6 @@ class MainActivity : ComponentActivity() {
                         composable("main_screen") { MainScreen(titleName = stringResource(id = R.string.app_name)) }
                     }
                 }
-
             }
         }
     }

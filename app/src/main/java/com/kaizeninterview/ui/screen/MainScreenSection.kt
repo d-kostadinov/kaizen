@@ -1,5 +1,6 @@
 package com.kaizeninterview.ui.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -21,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kaizeninterview.ui.screen.data.Section
@@ -29,16 +31,24 @@ import com.kaizeninterview.ui.theme.KaizenRed
 import java.util.Locale
 
 @Composable
-fun MainScreenSection(section: Section, isFav: Boolean, onToggleExpand: () -> Unit, onFavClicked: () -> Unit) {
+fun MainScreenSection(
+    section: Section,
+    isFav: Boolean,
+    onToggleExpand: () -> Unit,
+    onToggleFav: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onToggleExpand() }
-            .padding(horizontal = 12.dp),
+            .background(Color.White),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 12.dp)
+        ) {
             CustomCircle(color = KaizenRed, diameter = 16.dp)
             Spacer(modifier = Modifier.width(12.dp))
             Text(
@@ -46,7 +56,6 @@ fun MainScreenSection(section: Section, isFav: Boolean, onToggleExpand: () -> Un
                 fontSize = 16.sp,
                 style = MaterialTheme.typography.titleLarge
             )
-
         }
 
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -56,7 +65,7 @@ fun MainScreenSection(section: Section, isFav: Boolean, onToggleExpand: () -> Un
                     .height(1.dp),
                 checked = isFav,
                 onCheckedChange = {
-                    onFavClicked()
+                    onToggleFav()
                 },
                 thumbContent =
                 {

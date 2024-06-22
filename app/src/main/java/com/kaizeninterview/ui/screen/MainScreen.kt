@@ -25,16 +25,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.kaizeninterview.R
+import com.kaizeninterview.room.table.CellFav
+import com.kaizeninterview.room.table.SectionFav
 import com.kaizeninterview.ui.screen.data.Cell
 import com.kaizeninterview.ui.screen.data.Section
 import com.kaizeninterview.ui.screen.util.LoadingDialog
 import com.kaizeninterview.ui.screen.util.showErrorDialog
 import com.kaizeninterview.ui.theme.KaizenBlue
 import com.kaizeninterview.ui.theme.KaizenPrimaryColor
-import com.kaizeninterview.util.mapSportListToSectionList
-import com.kaizeninterview.util.mapSportToSection
 import com.kaizeninterview.viewmodel.KaizenViewModel
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,130 +61,139 @@ fun MainScreen(
             )
         }
     ) { innerPadding ->
-
         MainScreenContent(innerPadding, viewModel = viewModel)
-
     }
 }
 
 @Composable
 fun MainScreenContent(innerPadding: PaddingValues, viewModel: KaizenViewModel) {
 
-    val salesOrderLinesState by viewModel.sportsData.collectAsState()
+    val sportDataState by viewModel.sportsData.collectAsState()
 
     when {
-        salesOrderLinesState.isLoading -> {
+        sportDataState.isLoading -> {
             LoadingDialog()
         }
 
-        salesOrderLinesState.error != null -> {
+        sportDataState.error != null -> {
             showErrorDialog(
-                error = salesOrderLinesState.error!!
+                error = sportDataState.error!!
             )
         }
 
-        salesOrderLinesState.data != null -> {
+        sportDataState.data != null -> {
             SectionedGrid(
-                Modifier.padding(innerPadding),
-                sections = mapSportListToSectionList(salesOrderLinesState.data!!)
+                Modifier.padding(top = innerPadding.calculateTopPadding()),
+                sections = sportDataState.data!!,
+                viewModel = viewModel
             )
         }
     }
-
-//    var cell = Cell(10, false, "asd", "asd")
-//    var cellFav = Cell(10, true, "asd", "asd")
-//
-//    val sections = listOf(
-//        Section(
-//            "Section 1",
-//            listOf(
-//                cell,
-//                cell,
-//                cell,
-//                cell,
-//                cell,
-//                cellFav,
-//                cell,
-//                cell,
-//                cellFav,
-//                cell,
-//                cell,
-//                cell,
-//                cell
-//            ),
-//            true,
-//            true
-//        ),
-//        Section("Section 2", listOf(cell, cell, cell, cell), false, true),
-//        Section("Section 3", listOf(cell, cell, cell, cell), true, true),
-//    )
-
-
-//    val numbers = (1..10).toList()
-//    LazyColumn(contentPadding = innerPadding) {
-//        items(numbers) { number ->
-//            Text(text = number.toString())
-//        }
-//    }
 }
 
 @Composable
 fun CollapsableSection(
     section: Section,
     onToggleExpand: () -> Unit,
-    modifier: Modifier = Modifier
+    onToggleFavSection: () -> Unit,
+    onToggleFavCell: (String) -> Unit
 ) {
     var isExpanded by remember { mutableStateOf(section.isExpanded) }
     var isFav by remember { mutableStateOf(section.isFav) }
 
-    Column(modifier = modifier) {
+    Column() {
         // Section header
         MainScreenSection(section, isFav,
             onToggleExpand = {
                 isExpanded = !isExpanded
                 onToggleExpand()
             },
-            onFavClicked = { isFav = !isFav })
+            onToggleFav = {
+                isFav = !isFav
+                onToggleFavSection()
+            }
+        )
         // Items grid
         if (isExpanded) {
-            Box(
-                modifier = Modifier
-                    .height(section.calculateSectionHeight())
-                    .background(KaizenPrimaryColor)
-            ) {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(4),
-                    modifier = Modifier.fillMaxWidth()
+
+            var data by remember { mutableStateOf(listOf<Cell>()) }
+            data = section.itemsFiltered
+
+            if (data.isNotEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .height(section.calculateSectionHeight())
+                        .background(KaizenPrimaryColor)
                 ) {
-                    items(section.items.size) { index ->
-                        val item = section.items[index]
-                        MainScreenCell(cellData = item)
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(4),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        items(data.size) { index ->
+                            val item = data[index]
+                            MainScreenCell(
+                                cellData = item,
+                                onToggleFav = { cellId ->
+                                    onToggleFavCell(cellId)
+                                }
+                            )
+                        }
                     }
                 }
+            } else {
+                Text(
+                    text = stringResource(R.string.no_fav_games).uppercase(Locale.ROOT),
+                    textAlign = TextAlign.Center,
+                    fontSize = 16.sp,
+                    color = Color.White,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp)
+                        .background(KaizenPrimaryColor)
+                )
             }
-
         }
     }
 }
 
 @Composable
-fun SectionedGrid(modifier: Modifier, sections: List<Section>) {
+fun SectionedGrid(modifier: Modifier, sections: List<Section>, viewModel: KaizenViewModel) {
     // State to track expanded sections
-    val sectionStates = remember { mutableStateListOf<Section>() }
+    var sectionStates = remember { mutableStateListOf<Section>() }
     sectionStates.clear()
     sectionStates.addAll(sections)
 
-    LazyColumn(modifier = modifier) {
+    LazyColumn(modifier = modifier.background(KaizenPrimaryColor)) {
         items(sectionStates.size) { index ->
-            val section by remember { mutableStateOf(sectionStates[index]) }
+            var section by remember { mutableStateOf(sectionStates[index]) }
 
-//            val section = sectionStates[index]
             CollapsableSection(
                 section = section,
+                onToggleFavSection = {
+                    section.isFav = !section.isFav
+                    // Update state to reflect changes
+                    sectionStates[index] = section
+
+                    viewModel.insertSectionFav(SectionFav(section.id, section.isFav))
+                },
                 onToggleExpand = {
                     section.isExpanded = !section.isExpanded
                     // Update state to reflect changes
                     sectionStates[index] = section
+                },
+                onToggleFavCell = { cellId ->
+                    var cell = section.items.first { it.id == cellId }
+                    cell.isFav = !cell.isFav
+
+                    viewModel.insertCellFav(CellFav(cell.id, cell.isFav))
+
+                    var findedSection = sections.first { sc -> sc.id == section.id }
+                    var findedCell = findedSection.items.first { cl -> cl.id == cell.id }
+                    findedCell.isFav = cell.isFav
+
+                    // Update state to reflect changes
+                    sectionStates.clear()
+                    sectionStates.addAll(sections)
                 }
             )
         }
