@@ -8,8 +8,6 @@ This codebase is part of the Kaizen hiring proces. It demonstrates the use of mo
 - [Setup Instructions](#setup-instructions)
 - [Features](#features)
 - [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
 - [Video Demo](#video-demo)
 
 ## Tech Stack
@@ -47,10 +45,6 @@ To get a local copy of the project up and running, follow these steps:
 - **Favorites Filter**: Filter for favourite events by switch button.
 - **Local datastorage**: All data is stored locally using Room.
 
-
-## License
-
-Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Video Demo
 
