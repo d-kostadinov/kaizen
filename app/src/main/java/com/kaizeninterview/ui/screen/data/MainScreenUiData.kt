@@ -15,9 +15,13 @@ data class Section(
             rows += 1
         }
 
-        var paddings = (rows * 16).dp
+        var paddings = if(rows > 1){
+            (rows * 16).dp
+        }else{
+            0.dp
+        }
 
-        return (rows * 120).dp - paddings
+        return (rows * 200).dp - paddings
     }
 }
 

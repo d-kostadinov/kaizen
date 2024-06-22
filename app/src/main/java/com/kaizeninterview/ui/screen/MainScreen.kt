@@ -136,6 +136,7 @@ fun CollapsableSection(
         MainScreenSection(section, isFav,
             onToggleExpand = {
                 isExpanded = !isExpanded
+                onToggleExpand()
             },
             onFavClicked = { isFav = !isFav })
         // Items grid
@@ -169,7 +170,9 @@ fun SectionedGrid(modifier: Modifier, sections: List<Section>) {
 
     LazyColumn(modifier = modifier) {
         items(sectionStates.size) { index ->
-            val section = sectionStates[index]
+            val section by remember { mutableStateOf(sectionStates[index]) }
+
+//            val section = sectionStates[index]
             CollapsableSection(
                 section = section,
                 onToggleExpand = {

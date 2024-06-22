@@ -1,9 +1,14 @@
 package com.kaizeninterview.ui.screen
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
@@ -20,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kaizeninterview.R
 import com.kaizeninterview.ui.screen.data.Cell
+import com.kaizeninterview.ui.screen.util.TimerView
 import com.kaizeninterview.ui.theme.KaizenRed
 import com.kaizeninterview.ui.theme.KaizenYellow
 import java.util.Locale
@@ -32,8 +38,10 @@ fun MainScreenCell(cellData: Cell) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = cellData.timeUntilStart.toString(), color = Color.White)
+        TimerView(initialTimeInMillis = cellData.timeUntilStart)
+//        Text(text = cellData.timeUntilStart.toString(), color = Color.White)
 
+        Spacer(modifier = Modifier.height(4.dp))
         if (cellData.isFav) {
             Icon(
                 imageVector = Icons.Filled.Star,
@@ -49,13 +57,44 @@ fun MainScreenCell(cellData: Cell) {
                 tint = Color.White
             )
         }
-        Text(text = cellData.competitor1, fontSize = 14.sp, color = Color.White, textAlign = TextAlign.Center)
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp), // Adjust this height to match the height of two lines of text
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = cellData.competitor1,
+                fontSize = 14.sp,
+                color = Color.White,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.align(Alignment.Center),
+                maxLines = 2
+            )
+        }
         Text(
             text = stringResource(R.string.vs).uppercase(Locale.ROOT),
             color = KaizenRed,
             fontSize = 9.sp
         )
-        Text(text = cellData.competitor2, fontSize = 14.sp, color = Color.White, textAlign = TextAlign.Center)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp), // Adjust this height to match the height of two lines of text
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = cellData.competitor2,
+                fontSize = 14.sp,
+                color = Color.White,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.align(Alignment.Center),
+                maxLines = 2
+            )
+        }
     }
 
 }
