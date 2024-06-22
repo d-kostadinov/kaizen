@@ -1,4 +1,4 @@
-# Kazen Task
+# Kaizen Task
 
 This codebase is part of the Kaizen hiring proces. It demonstrates the use of modern Android development practices, including Jetpack Compose for UI, Dagger Hilt for dependency injection, the MVVM architecture pattern, and Room for local database management.
 
