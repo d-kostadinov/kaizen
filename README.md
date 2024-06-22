@@ -55,4 +55,4 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ## Video Demo
 
 Please check the video below to see what the app actually looks like:
-[Watch the video](media/sample.mp4)
+[Please download and watch the video](media/sample.mp4)
